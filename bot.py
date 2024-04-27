@@ -4,7 +4,7 @@ import datetime as dt
 import threading
 
 
-bot = telebot.TeleBot('5830879893:AAGDZTLWWZwzzRkSFpWfUbTfYbL9TWHQehI')
+bot = telebot.TeleBot(TOKEN)
 
 plans = {}
 
