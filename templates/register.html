@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!--    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />-->
+<!--    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>-->
+<!--    <py-env>-->
+<!--            - telebot-->
+<!--            - datetime-->
+<!--    </py-env>-->
+    <title> {{title}} </title>
+    <style>
+        body {
+          background-color: #e9f2f2;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          font-family: 'Roboto', sans-serif;
+          background: linear-gradient(#8b8ba8, #6e6ed7)
+        }
+        form {
+          max-width: 415px;
+          background: #FFFFFF;
+          border-radius: 20px;
+          padding-left: 42px;
+          padding-right: 42px;
+          padding-top: 35px;
+          padding-bottom: 35px;
+          box-shadow: 0px 6px 50px rgba(217, 229, 255, .5);
+         }
+        input {
+          margin: 5px;
+          padding: 5px;
+         }
+        button {
+          padding: 5px 10px;
+         }
+    </style>
+</head>
+<body>
+    <form action="" method="post">
+        <h1>Регистрация</h1>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control", type="email") }}<br>
+            {% for error in form.email.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password") }}<br>
+            {% for error in form.password.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password_again.label }}<br>
+            {{ form.password_again(class="form-control", type="password") }}<br>
+            {% for error in form.password_again.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.tg_name.label }}<br>
+            {{ form.tg_name(class="form-control") }}<br>
+            {% for error in form.tg_name.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+    <!--    <label>{{ form.tg_name(for="telegram") }} </label>-->
+    <!--    <label for="telegram">Введите ваш Telegram ID:</label>-->
+    <!--    <input type="text" id="telegram">-->
+
+    <!--    <button type="button">Отправить код</button>-->
+
+    <!--    <label for="code">Введите полученный код:</label>-->
+    <!--    <input type="text" id="code">-->
+
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{message}}
+<!--        <py-script>-->
+
+<!--        </py-script>-->
+    </form>
+</body>
+</html>
