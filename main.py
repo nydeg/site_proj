@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request
 from data import db_session
 from data.users import User
 from forms.register import RegisterForm
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user
 from forms.login import LoginForm
 from random import randint
 from data.jobs import Jobs
@@ -36,25 +36,31 @@ def index():
 def add():
     title = request.form.get('title')
     print(title)
+    # мой способ
+    db_sess = db_session.create_session()
     new_plan = Jobs(title=title, is_finished=False)
-    db_sess = db_session.create_session()
-    db_sess.add(new_plan)
+    # user = db_sess.query(User).filter(User.id == 1).first()
+    # db_sess.add(new_plan)
+    # user.jobs.append(new_plan)
+
+    # 2 способ (работает)
+    current_user.jobs.append(new_plan)
+    db_sess.merge(current_user)
     db_sess.commit()
     return redirect(url_for('index'))
 
 
-@app.get('/update/<int:todo_id>')
-def update(todo_id):
-    db_sess = db_session.create_session()
-    todo = Jobs.query.filter_by(id=todo_id).first()
-    todo.is_finished = not todo.is_complete
-    db_sess.commit()
-    return redirect(url_for('index'))
+# @app.get('/update/<int:todo_id>')
+# def update(todo_id):
+#     db_sess = db_session.create_session()
+#     todo = Jobs.query.filter_by(id=todo_id).first()
+#     todo.is_finished = not todo.is_complete
+#     db_sess.commit()
+#     return redirect(url_for('index'))
 
 
 # @app.get('/delete/<int:todo_id>')
 # def delete_r(todo_id):
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -119,17 +125,17 @@ def delete():
 
 def main():
     db_session.global_init("db/blogs.db")
-    user = User()
-    user.surname = "Scott"
-    user.name = "Ridley"
-    user.age = 21
-    user.position = "captain"
-    user.speciality = 'research engineer'
-    user.address = 'module_1'
-    user.email = 'scott_chief@mars.org'
-    db_sess = db_session.create_session()
-    db_sess.add(user)
-    db_sess.commit()
+    # user = User()
+    # user.surname = "Scott"
+    # user.name = "Ridley"
+    # user.age = 21
+    # user.position = "captain"
+    # user.speciality = 'research engineer'
+    # user.address = 'module_1'
+    # user.email = 'scott_chief@mars.org'
+    # db_sess = db_session.create_session()
+    # db_sess.add(user)
+    # db_sess.commit()
 
     # user = db_sess.query(User).filter(User.id == 1).first()
     # jobs = Jobs(team_leader=1, job='deployment of residential modules 1 and 2', work_size=15, collaborators='2, 3',
