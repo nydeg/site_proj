@@ -4,17 +4,17 @@ from data.users import User
 from forms.register import RegisterForm
 from flask_login import LoginManager, login_user, current_user
 from forms.login import LoginForm
-from random import randint
 from data.jobs import Jobs
 import datetime as dt
+import sqlite3
 
 LOGIN = False
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'random string'
-reg = []
 log = ''
+id_log = 0
 
 
 @login_manager.user_loader
@@ -26,41 +26,46 @@ def load_user(user_id):
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
+    todo_list = db_sess.query(Jobs).all()
+    x = 1
+    for i in todo_list:
+        if i.connection == id_log:
+            i.id = x
+            x += 1
+
     if LOGIN:
-        return render_template("main.html", news="")
+        return render_template("main.html", todo_list=todo_list, id_log=id_log)
     else:
-        return render_template("base.html", news="")
+        return render_template("base.html")
 
 
 @app.post('/add')
 def add():
     title = request.form.get('title')
-    print(title)
-    # мой способ
     db_sess = db_session.create_session()
     new_plan = Jobs(title=title, is_finished=False)
-    # user = db_sess.query(User).filter(User.id == 1).first()
-    # db_sess.add(new_plan)
-    # user.jobs.append(new_plan)
-
-    # 2 способ (работает)
     current_user.jobs.append(new_plan)
     db_sess.merge(current_user)
     db_sess.commit()
     return redirect(url_for('index'))
 
 
-# @app.get('/update/<int:todo_id>')
-# def update(todo_id):
-#     db_sess = db_session.create_session()
-#     todo = Jobs.query.filter_by(id=todo_id).first()
-#     todo.is_finished = not todo.is_complete
-#     db_sess.commit()
-#     return redirect(url_for('index'))
+@app.get('/update/<int:todo_id>')
+def update(todo_id):
+    db_sess = db_session.create_session()
+    todo = db_sess.query(Jobs).filter(Jobs.id == todo_id).first()
+    todo.is_finished = not todo.is_finished
+    db_sess.commit()
+    return redirect(url_for('index'))
 
 
-# @app.get('/delete/<int:todo_id>')
-# def delete_r(todo_id):
+@app.get('/delete/<int:todo_id>')
+def delete(todo_id):
+    db_sess = db_session.create_session()
+    todo = db_sess.query(Jobs).filter(Jobs.id == todo_id).first()
+    db_sess.delete(todo)
+    db_sess.commit()
+    return redirect(url_for('index'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -80,8 +85,8 @@ def reqister():
             name=form.tg_name.data,
             email=form.email.data
         )
-        reg.append(request.form.get('tg_name'))
-        print(reg)
+        # reg.append(request.form.get('tg_name'))
+        # print(reg)
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
@@ -97,10 +102,13 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            global LOGIN, log
+            global LOGIN, log, id_log
             LOGIN = True
             log = request.form.get('email')
-            print(log)
+            con = sqlite3.connect('db/blogs.db')
+            cur = con.cursor()
+            id_log = cur.execute("""SELECT id FROM users WHERE email = ?""", (log, )).fetchone()[0]
+            con.close()
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
@@ -112,50 +120,19 @@ def login():
 def leave():
     global LOGIN
     LOGIN = False
-    return render_template("base.html", news="")
+    return render_template("base.html")
 
 
-@app.route('/delete', methods=['GET', 'POST'])
-def delete():
+@app.route('/delete_acc', methods=['GET', 'POST'])
+def delete_acc():
     global LOGIN
     LOGIN = False
     # тут надо прописать удаление аккаунта (из базы данных и в будущем из тг тоже)
-    return render_template("base.html", news="")
+    return render_template("base.html")
 
 
 def main():
     db_session.global_init("db/blogs.db")
-    # user = User()
-    # user.surname = "Scott"
-    # user.name = "Ridley"
-    # user.age = 21
-    # user.position = "captain"
-    # user.speciality = 'research engineer'
-    # user.address = 'module_1'
-    # user.email = 'scott_chief@mars.org'
-    # db_sess = db_session.create_session()
-    # db_sess.add(user)
-    # db_sess.commit()
-
-    # user = db_sess.query(User).filter(User.id == 1).first()
-    # jobs = Jobs(team_leader=1, job='deployment of residential modules 1 and 2', work_size=15, collaborators='2, 3',
-    #             start_date=dt.datetime.now(), is_finished=False)
-    # db_sess.add(jobs)
-    # user.jobs.append(jobs)
-    # db_sess.commit()
-
-    # user = db_sess.query(User).filter(User.id == 1).first()
-    # news = News(title="Вторая новость", content="Уже вторая запись!",
-    #             user=user, is_private=False)
-    # db_sess.add(news)
-    # db_sess.commit()
-    #
-    # user = db_sess.query(User).filter(User.id == 1).first()
-    # news = News(title="Личная запись", content="Эта запись личная",
-    #             is_private=True)
-    # user.news.append(news)
-    # db_sess.commit()
-
     app.run()
 
 

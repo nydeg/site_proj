@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> {{title}} </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
 </head>
 <body>
     <div class="container">
@@ -25,16 +26,36 @@
 
             <div class="col-md-3 text-end">
                 <a href="/leave" type="button" class="btn btn-outline-primary me-2">Leave</a>
-                <a href="/delete" type="button" class="btn btn-primary">Delete Acc</a>
+                <a href="/delete_acc" type="button" class="btn btn-primary">Delete Acc</a>
             </div>
         </header>
     </div>
-<form class="ui form" action="/add" method="post">
-    <div class="field">
+<div style="margin-top: 50px">
+    <form action="/add" method="post">
         <label>Новая задача</label>
         <input type="text" name="title" placeholder="Введите название плана"><br>
-    </div>
-    <button class="ui teal basic button" type="submit">Добавить</button>
-</form>
+        <button type="submit">Добавить</button>
+    </form><br><br>
+    <table>
+        <tbody>
+            {% for todo in todo_list %}
+                {% if todo.connection == id_log %}
+                    <tr>
+                        <td>{{todo.id}}</td>
+                        <td>{{todo.title}}</td>
+                        {% if todo.is_finished == False %}
+                        <td>Не готово</td>
+                        {% else %}
+                        <td>Готово</td>
+                        {% endif %}
+                        <td><a href="/update/{{todo.id}}">Изменить</a></td>
+                        <td><a href="/delete/{{todo.id}}">Удалить</a></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>
