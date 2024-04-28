@@ -20,7 +20,7 @@
             </div>
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
                 <li><a href="https://t.me/timemanagmmentBot" target="_blank" class="nav-link px-2">Telegram</a></li>
             </ul>
 
@@ -30,32 +30,32 @@
             </div>
         </header>
     </div>
-<div style="margin-top: 50px">
+<div id="first">
+    <h1>Мои планы</h1>
     <form action="/add" method="post">
-        <label>Новая задача</label>
-        <input type="text" name="title" placeholder="Введите название плана"><br>
-        <button type="submit">Добавить</button>
-    </form><br><br>
+        <input type="text" name="title" placeholder="Введите название плана" required value=""><br>
+        <button class="button1" type="submit">Добавить</button>
+    </form>
+    <br><br>
     <table>
         <tbody>
             {% for todo in todo_list %}
                 {% if todo.connection == id_log %}
                     <tr>
-                        <td>{{todo.id}}</td>
-                        <td>{{todo.title}}</td>
+                        <td class="thick">{{todo.id}}</td>
+                        <td class="thick">{{todo.title}}</td>
                         {% if todo.is_finished == False %}
-                        <td>Не готово</td>
+                        <td><label class="label pending">Не готово</label></td>
                         {% else %}
-                        <td>Готово</td>
+                        <td><label class="label done">Готово</label></td>
                         {% endif %}
-                        <td><a href="/update/{{todo.id}}">Изменить</a></td>
-                        <td><a href="/delete/{{todo.id}}">Удалить</a></td>
+                        <td><a href="/update/{{ todo.id }}" class="button2">Изменить статус</a></td>
+                        <td><a href="/delete/{{ todo.id }}" class="button3">Удалить</a></td>
                     </tr>
                 {% endif %}
             {% endfor %}
         </tbody>
     </table>
 </div>
-
 </body>
 </html>

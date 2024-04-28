@@ -17,18 +17,19 @@ margin-top: 50px;
 .button1 {
     width: 115px;
     height: 25px;
-    background: #A0A0A0;
-    border:none;
+    background: #d2d6d6;
+    border: none;
     text-align: center;
     border-radius: 5px;
     font-weight: bold;
-    font-size:16px;
+    font-size: 17px;
+    margin-top: 15px;
 }
 .button2 {
     width: 115px;
     height: 25px;
     background: #0066ff;
-    color:white;
+    color: white;
     padding: 10px;
     text-align: center;
     border-radius: 5px;
@@ -38,7 +39,7 @@ margin-top: 50px;
 .button3 {
     width: 115px;
     height: 25px;
-    background: red;
+    background: #b30505;
     padding: 10px;
     text-align: center;
     border-radius: 5px;
@@ -53,8 +54,8 @@ margin-top: 50px;
 
 }
 .thick{font-weight: bold;font-size: 20px;}
-.done {background-color: #04AA6D;}
-.pending {background-color: #ff9800;}
+.done {background-color: #04AA6D; font-size: 18px; font-weight: bold;}
+.pending {background-color: #ff9800; font-size: 18px; font-weight: bold;}
 table, td {
   border: 1px none;
   padding: 15px;
@@ -62,8 +63,4 @@ table, td {
 table {
   margin-left: auto;
   margin-right: auto;
-}
-h1
-{
-color:#cc0000;
 }

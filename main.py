@@ -13,7 +13,7 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'random string'
-log = ''
+reg = []
 id_log = 0
 
 
@@ -26,17 +26,12 @@ def load_user(user_id):
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    todo_list = db_sess.query(Jobs).all()
-    x = 1
-    for i in todo_list:
-        if i.connection == id_log:
-            i.id = x
-            x += 1
 
     if LOGIN:
-        return render_template("main.html", todo_list=todo_list, id_log=id_log)
+        todo_list = db_sess.query(Jobs).all()
+        return render_template("main.html", todo_list=todo_list, id_log=id_log, title='Основное меню')
     else:
-        return render_template("base.html")
+        return render_template("base.html", title='Главная страница')
 
 
 @app.post('/add')
@@ -65,6 +60,20 @@ def delete(todo_id):
     todo = db_sess.query(Jobs).filter(Jobs.id == todo_id).first()
     db_sess.delete(todo)
     db_sess.commit()
+
+    con = sqlite3.connect('db/blogs.db')
+    cur = con.cursor()
+    plans = cur.execute("""SELECT title from jobs""").fetchall()
+    plans = [i[0] for i in plans]
+    length = len(plans)
+    if length > 0:
+        for my_id in range(1, length + 1):
+            cur.execute("""UPDATE jobs
+                        SET id = ?
+                        WHERE title = ?""", (my_id, plans[my_id - 1]))
+    con.commit()
+    con.close()
+
     return redirect(url_for('index'))
 
 
@@ -85,7 +94,7 @@ def reqister():
             name=form.tg_name.data,
             email=form.email.data
         )
-        # reg.append(request.form.get('tg_name'))
+        reg.append(request.form.get('tg_name'))
         # print(reg)
         user.set_password(form.password.data)
         db_sess.add(user)
@@ -102,7 +111,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            global LOGIN, log, id_log
+            global LOGIN, id_log
             LOGIN = True
             log = request.form.get('email')
             con = sqlite3.connect('db/blogs.db')
@@ -120,7 +129,7 @@ def login():
 def leave():
     global LOGIN
     LOGIN = False
-    return render_template("base.html")
+    return render_template(url_for('index'))
 
 
 @app.route('/delete_acc', methods=['GET', 'POST'])
@@ -128,7 +137,7 @@ def delete_acc():
     global LOGIN
     LOGIN = False
     # тут надо прописать удаление аккаунта (из базы данных и в будущем из тг тоже)
-    return render_template("base.html")
+    return render_template(url_for('index'))
 
 
 def main():
