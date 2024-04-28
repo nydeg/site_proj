@@ -29,7 +29,7 @@ def index():
 
     if LOGIN:
         todo_list = db_sess.query(Jobs).all()
-        return render_template("main.html", todo_list=todo_list, id_log=id_log, title='Основное меню')
+        return render_template("main.html", todo_list=todo_list, id_log=id_log, title='Главная страница')
     else:
         return render_template("base.html", title='Главная страница')
 
@@ -129,7 +129,7 @@ def login():
 def leave():
     global LOGIN
     LOGIN = False
-    return render_template(url_for('index'))
+    return render_template("base.html", title='Главная страница')
 
 
 @app.route('/delete_acc', methods=['GET', 'POST'])
@@ -137,7 +137,7 @@ def delete_acc():
     global LOGIN
     LOGIN = False
     # тут надо прописать удаление аккаунта (из базы данных и в будущем из тг тоже)
-    return render_template(url_for('index'))
+    return render_template("base.html", title='Главная страница')
 
 
 def main():
