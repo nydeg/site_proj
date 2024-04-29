@@ -2,6 +2,8 @@ import sqlalchemy as sa
 import sqlalchemy.orm as orm
 from sqlalchemy.orm import Session
 import sqlalchemy.ext.declarative as dec
+import multiprocessing as mp
+from bot import bot_func
 
 SqlAlchemyBase = dec.declarative_base()
 
@@ -26,6 +28,8 @@ def global_init(db_file):
     from . import __all_models
 
     SqlAlchemyBase.metadata.create_all(engine)
+    p = mp.Process(target=bot_func)
+    p.start()
 
 
 def create_session() -> Session:

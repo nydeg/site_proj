@@ -7,6 +7,5 @@ class RegisterForm(FlaskForm):
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    tg_name = StringField('Тег пользователя в телеграм', validators=[DataRequired()])
-    # check = StringField('Код', validators=[DataRequired()])
+    name = StringField('Имя', validators=[DataRequired()])
     submit = SubmitField('Войти')

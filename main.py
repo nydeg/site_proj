@@ -5,7 +5,6 @@ from forms.register import RegisterForm
 from flask_login import LoginManager, login_user, current_user
 from forms.login import LoginForm
 from data.jobs import Jobs
-import datetime as dt
 import sqlite3
 
 LOGIN = False
@@ -63,14 +62,14 @@ def delete(todo_id):
 
     con = sqlite3.connect('db/blogs.db')
     cur = con.cursor()
-    plans = cur.execute("""SELECT title from jobs""").fetchall()
-    plans = [i[0] for i in plans]
-    length = len(plans)
+    planss = cur.execute("""SELECT title from jobs""").fetchall()
+    planss = [i[0] for i in planss]
+    length = len(planss)
     if length > 0:
         for my_id in range(1, length + 1):
             cur.execute("""UPDATE jobs
                         SET id = ?
-                        WHERE title = ?""", (my_id, plans[my_id - 1]))
+                        WHERE title = ?""", (my_id, planss[my_id - 1]))
     con.commit()
     con.close()
 
@@ -91,10 +90,10 @@ def reqister():
                                    form=form,
                                    message="Такой пользователь уже есть")
         user = User(
-            name=form.tg_name.data,
+            name=form.name.data,
             email=form.email.data
         )
-        reg.append(request.form.get('tg_name'))
+        reg.append(request.form.get('name'))
         # print(reg)
         user.set_password(form.password.data)
         db_sess.add(user)
@@ -140,10 +139,6 @@ def delete_acc():
     return render_template("base.html", title='Главная страница')
 
 
-def main():
+if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
     app.run()
-
-
-if __name__ == '__main__':
-    main()

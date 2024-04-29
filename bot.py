@@ -4,7 +4,7 @@ import datetime as dt
 import threading
 
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot('5830879893:AAGDZTLWWZwzzRkSFpWfUbTfYbL9TWHQehI')
 
 plans = {}
 
@@ -116,7 +116,7 @@ def handle_text(message):
 
             else:
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                bot.register_next_step_handler(message, delete)
+                bot.register_next_step_handler(message, delete_plan)
                 item1 = types.KeyboardButton('✉ Мои планы')
                 item2 = types.KeyboardButton('📚 Информация')
 
@@ -168,6 +168,7 @@ def add_to_list(message):
         if 0 < int(date_name[:2]) <= max_days and 0 <= int(date_name[11:13]) < 24 and 0 <= int(
                 date_name[14:]) < 60:
             plans[chat_id].append(date_name)
+            check_plans()
             bot.send_message(chat_id, "План добавлен")
         else:
             bot.send_message(chat_id, 'Некорректный ввод. Попробуйте еще раз')
@@ -177,7 +178,7 @@ def add_to_list(message):
         bot.register_next_step_handler(message, add_to_list)
 
 
-def delete(message):
+def delete_plan(message):
     chat_id = message.chat.id
     del_plan = message.text
     if del_plan in plans[chat_id]:
@@ -218,6 +219,5 @@ def check_plans():
     threading.Timer(15, check_plans).start()
 
 
-check_plans()
-
-bot.infinity_polling()
+def bot_func():
+    bot.polling()

@@ -67,9 +67,9 @@
             {% endfor %}
         </p>
         <p>
-            {{ form.tg_name.label }}<br>
-            {{ form.tg_name(class="form-control") }}<br>
-            {% for error in form.tg_name.errors %}
+            {{ form.name.label }}<br>
+            {{ form.name(class="form-control") }}<br>
+            {% for error in form.name.errors %}
                 <p class="alert alert-danger" role="alert">
                     {{ error }}
                 </p>
