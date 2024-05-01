@@ -14,4 +14,5 @@ class Jobs(SqlAlchemyBase, UserMixin):
     connection = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     title = sqlalchemy.Column(sqlalchemy.String)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean)
+    date = sqlalchemy.Column(sqlalchemy.String)
     jb = orm.relationship('User')
